@@ -12,8 +12,10 @@ def usage():
     print("    default: name=puppetmaster, port=8140")
 
 def puppet_init():
-    os.mkdir("conf.d")
-    os.mkdir("ssl.d")
+    if not os.path.exists("ssl.d"):
+        os.mkdir("ssl.d")
+    if not os.path.exists("conf.d"):
+        subprocess.check_call("git clone https://bitbucket.org/genee/genee-puppet.git conf.d", shell=True)
 
 def puppet_run():
 
@@ -30,6 +32,10 @@ def puppet_run():
             name = a
         elif o == "-p":
             port = int(a)
+
+    if not os.path.exists('conf.d') or not os.path.exists('ssl.d'):
+        print('Run "genee-puppet init" first.')
+        sys.exit(0)
 
     try:
         cmd = ("docker run --name %s -d --restart=always -v %s:/opt/puppet -v %s:/var/lib/puppet/ssl -v /dev/log:/dev/log -p %d:8140 genee/puppetmaster" % (name, os.getcwd() + '/conf.d', os.getcwd() + '/ssl.d', port))
@@ -48,6 +54,9 @@ def main():
         puppet_init()
     elif sys.argv[1] == 'run':
         puppet_run()
+    else:
+        usage()
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
