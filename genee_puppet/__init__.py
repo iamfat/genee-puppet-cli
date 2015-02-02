@@ -31,6 +31,10 @@ def puppet_run():
         elif o == "-p":
             port = int(a)
 
+    if not os.path.exists('conf.d') or not os.path.exists('ssl.d'):
+        print('Run "genee-puppet init" first.')
+        sys.exit(0)
+
     try:
         cmd = ("docker run --name %s -d --restart=always -v %s:/opt/puppet -v %s:/var/lib/puppet/ssl -v /dev/log:/dev/log -p %d:8140 genee/puppetmaster" % (name, os.getcwd() + '/conf.d', os.getcwd() + '/ssl.d', port))
         print(cmd + "\n")
