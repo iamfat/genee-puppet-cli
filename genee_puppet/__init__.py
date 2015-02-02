@@ -12,8 +12,10 @@ def usage():
     print("    default: name=puppetmaster, port=8140")
 
 def puppet_init():
-    os.mkdir("conf.d")
-    os.mkdir("ssl.d")
+    if not os.path.exists("ssl.d"):
+        os.mkdir("ssl.d")
+    if not os.path.exists("conf.d"):
+        subprocess.check_call("git clone https://bitbucket.org/genee/genee-puppet.git conf.d", shell=True)
 
 def puppet_run():
 
