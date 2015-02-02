@@ -48,6 +48,9 @@ def main():
         puppet_init()
     elif sys.argv[1] == 'run':
         puppet_run()
+    else:
+        usage()
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
